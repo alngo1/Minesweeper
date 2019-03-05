@@ -1,5 +1,3 @@
-
-
 import de.bezier.guido.*;
 public final static int NUM_ROWS = 20;
 public final static int NUM_COLS = 20;
@@ -29,14 +27,12 @@ void setup ()
 }
 public void setBombs()
 {
-    //your code
     while(bombs.size() < NUM_BOMBS){
         int r = (int)(Math.random()*NUM_ROWS);
         int c = (int)(Math.random()*NUM_COLS);
         if(!bombs.contains(buttons[r][c])){
             bombs.add(buttons[r][c]);
         }
-        
         System.out.println(r +" , "+c);
     } 
 }
@@ -93,8 +89,22 @@ public class MSButton
     public void mousePressed () 
     {
         clicked = true;
-        if(isValid(r,c-1) && buttons[r][c-1].isMarked() == false){
-            buttons[r][c-1].mousePressed();
+        if(mouseButton == RIGHT){
+            marked = !marked;
+            if(marked == false){
+                clicked = false;
+            }
+        }
+        else if(bombs.contains(this)){
+            System.out.println("BIG OOF!");
+        }else if(countBombs(r, c) > 0){
+            setLabel(""+countBombs(r, c));
+        }else{
+            for(int r = 0; r < 4; r++){
+                for(int c = 0; c < 4; c++){
+                    buttons[r][c].mousePressed();
+                }
+            }
         }
     }
 
@@ -127,7 +137,15 @@ public class MSButton
     public int countBombs(int row, int col)
     {
         int numBombs = 0;
-        //your code here
+        if(bombs.contains(buttons[r][c]))
+            numBombs = numBombs - 1;
+        for(int j = row-1; j < row+ 2; j++){
+            for(int i = col-1; i < col+2; i++){
+                if(isValid(j, i) && bombs.contains(buttons[j][i])){
+                    numBombs++;
+                }
+            }
+        }
         return numBombs;
     }
 }
